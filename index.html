@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inventario de EPP — MXCD10</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1" crossorigin="anonymous"></script>
+<style>
+  :root{
+    --navy:#2D3276;
+    --navy-dark:#1F234F;
+    --yellow:#FFE600;
+    --bg-page:#F5F5FA;
+    --bg-card:#ffffff;
+    --text-primary:#1F234F;
+    --text-secondary:#7A7E9E;
+    --ok:#2D3276;
+    --warn:#F5A623;
+    --danger:#E1332B;
+    --radius:16px;
+    --gap:18px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Poppins',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--bg-page);
+    color:var(--text-primary);
+  }
+  .wrap{max-width:1240px;margin:0 auto;padding:22px 20px 40px;}
+
+  /* topbar */
+  .topbar{
+    display:flex;align-items:center;gap:8px;
+    font-size:12px;font-weight:700;letter-spacing:1.5px;color:var(--navy);
+    text-transform:uppercase;margin-bottom:14px;
+  }
+  .topbar .dot{width:8px;height:8px;border-radius:50%;background:var(--yellow);}
+
+  /* site selector */
+  .site-selector{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .site-selector label{font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px;}
+  .site-select{
+    border:1.5px solid var(--navy);background:#fff;color:var(--navy);
+    font-family:inherit;font-size:14px;font-weight:700;letter-spacing:.3px;
+    padding:8px 34px 8px 16px;border-radius:12px;cursor:pointer;
+    appearance:none;-webkit-appearance:none;-moz-appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%232D3276'><path d='M5.5 7.5l4.5 4.5 4.5-4.5' stroke='%232D3276' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat;background-position:right 12px center;background-size:14px;
+  }
+  .site-select:hover{background-color:#EDEDF8;}
+  .site-select:focus{outline:2px solid var(--yellow);outline-offset:1px;}
+
+  /* hero */
+  .hero{
+    background:var(--navy);
+    background-image:radial-gradient(circle at 100% 0%, rgba(255,230,0,.12), transparent 45%);
+    border-radius:var(--radius);
+    padding:28px 30px;
+    color:#fff;
+    margin-bottom:var(--gap);
+    display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px;
+  }
+  .hero h1{font-size:26px;font-weight:800;margin:0 0 6px;}
+  .hero p{margin:0;font-size:13px;color:rgba(255,255,255,.72);}
+  .hero .badge-total{
+    background:var(--yellow);color:var(--navy-dark);font-weight:800;font-size:22px;
+    padding:10px 20px;border-radius:999px;white-space:nowrap;
+  }
+  .hero .badge-total span{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;opacity:.75;}
+  .refresh-btn{
+    width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.3);
+    background:rgba(255,255,255,.1);color:#fff;font-size:17px;cursor:pointer;transition:transform .4s;
+  }
+  .refresh-btn:hover{background:rgba(255,255,255,.2);}
+  .refresh-btn.spinning{animation:spin 0.8s linear infinite;}
+  @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+  .live-banner{
+    display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#fff;
+    background:rgba(255,255,255,.12);padding:5px 12px;border-radius:999px;width:fit-content;margin-top:8px;
+  }
+  .live-banner .pulse{width:7px;height:7px;border-radius:50%;background:#4ADE80;box-shadow:0 0 0 rgba(74,222,128,.6);animation:pulse 1.8s infinite;}
+  .live-banner.error .pulse{background:#F5A623;animation:none;}
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(74,222,128,.6);}
+    70%{box-shadow:0 0 0 8px rgba(74,222,128,0);}
+    100%{box-shadow:0 0 0 0 rgba(74,222,128,0);}
+  }
+
+  /* KPI row */
+  .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:var(--gap);margin-bottom:26px;}
+  .kpi-card{
+    background:var(--bg-card);border-radius:var(--radius);padding:18px 20px;
+    box-shadow:0 2px 10px rgba(31,35,79,.06);
+    border-top:4px solid var(--navy);
+  }
+  .kpi-card.alert{border-top-color:var(--warn);}
+  .kpi-label{font-size:12px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;}
+  .kpi-value{font-size:30px;font-weight:800;color:var(--navy);}
+  .kpi-value.alert{color:var(--warn);}
+  .kpi-sub{font-size:12px;color:var(--text-secondary);margin-top:4px;}
+
+  /* category section */
+  .category{
+    background:var(--bg-card);border-radius:var(--radius);
+    box-shadow:0 2px 10px rgba(31,35,79,.06);
+    margin-bottom:24px;overflow:hidden;
+  }
+  .category-header{
+    background:var(--navy);color:#fff;padding:16px 24px;
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  }
+  .category-header .title{display:flex;align-items:center;gap:12px;font-size:17px;font-weight:700;}
+  .category-header .icon-badge{
+    width:36px;height:36px;border-radius:10px;background:var(--yellow);
+    display:flex;align-items:center;justify-content:center;font-size:18px;
+  }
+  .category-header .icon-badge svg{width:20px;height:20px;display:block;}
+  .category-header .total-pill{
+    background:rgba(255,255,255,.14);padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;
+  }
+  .category-body{padding:24px;}
+
+  .size-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-bottom:22px;
+  }
+  .size-tile{
+    background:#F7F7FC;border-radius:12px;padding:14px 12px;text-align:center;position:relative;
+    border:1px solid #ECECF6;
+  }
+  .size-tile.warn{background:#FFF7E8;border-color:#FCE3AE;}
+  .size-tile.danger{background:#FDEDEC;border-color:#F6C6C3;}
+  .size-tile .talla{font-size:12px;color:var(--text-secondary);font-weight:600;margin-bottom:6px;}
+  .size-tile .piezas{font-size:24px;font-weight:800;color:var(--navy);}
+  .size-tile.warn .piezas{color:var(--warn);}
+  .size-tile.danger .piezas{color:var(--danger);}
+  .size-tile .flag{position:absolute;top:8px;right:10px;font-size:13px;}
+  .size-tile .anom{position:absolute;top:8px;left:10px;font-size:11px;cursor:help;}
+  .size-tile .estado{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;margin-top:4px;}
+  .size-tile.warn .estado{color:var(--warn);}
+  .size-tile.danger .estado{color:var(--danger);}
+
+  .chart-container{background:#fff;}
+  .chart-container h4{font-size:13px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px;margin:0 0 14px;}
+  .chart-container canvas{max-height:220px;}
+
+  .legend-row{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--text-secondary);margin-top:16px;}
+  .legend-row .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;}
+  .legend-row .dot.ok{background:var(--navy);}
+  .legend-row .dot.warn{background:var(--warn);}
+  .legend-row .dot.danger{background:var(--danger);}
+
+  .footer{text-align:center;font-size:12px;color:var(--text-secondary);padding:10px 0;}
+
+  @media (max-width:640px){
+    .hero{flex-direction:column;align-items:flex-start;}
+    .kpi-row{grid-template-columns:repeat(2,1fr);}
+    .size-grid{grid-template-columns:repeat(auto-fill,minmax(90px,1fr));}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar"><span class="dot"></span> EPP · SEGURIDAD · <span id="topbar-site">MXCD10</span></div>
+
+  <div class="hero">
+    <div>
+      <h1>Inventario de Equipo de Protección Personal</h1>
+      <div class="live-banner" id="live-banner"><span class="pulse"></span><span id="live-banner-text">Conectando…</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="refresh-btn" class="refresh-btn" title="Actualizar ahora">⟳</button>
+      <div class="badge-total"><span>Piezas totales</span><span id="hero-total" style="font-size:22px;">0</span></div>
+    </div>
+  </div>
+
+  <div class="site-selector">
+    <label for="site-select">Site</label>
+    <select class="site-select" id="site-select"></select>
+  </div>
+
+  <section class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-label">Piezas de calzado</div>
+      <div class="kpi-value" id="kpi-calzado">0</div>
+      <div class="kpi-sub" id="kpi-calzado-sub"></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Piezas de guantes</div>
+      <div class="kpi-value" id="kpi-guantes">0</div>
+      <div class="kpi-sub" id="kpi-guantes-sub"></div>
+    </div>
+    <div class="kpi-card alert">
+      <div class="kpi-label">Tallas agotadas</div>
+      <div class="kpi-value alert" id="kpi-agotadas">0</div>
+      <div class="kpi-sub">0 piezas disponibles</div>
+    </div>
+    <div class="kpi-card alert">
+      <div class="kpi-label">Tallas con stock bajo</div>
+      <div class="kpi-value alert" id="kpi-bajas">0</div>
+      <div class="kpi-sub">Menos de 5 piezas</div>
+    </div>
+  </section>
+
+  <!-- CALZADO -->
+  <section class="category">
+    <div class="category-header">
+      <div class="title"><span class="icon-badge"><svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M12 6h10a2 2 0 0 1 2 2v10a4 4 0 0 0 4 4h4a4 4 0 0 1 4 4v2a2 2 0 0 1-2 2H12a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" fill="#1F234F"/></svg></span> Calzado de seguridad</div>
+      <div class="total-pill" id="calzado-total-pill">0 piezas</div>
+    </div>
+    <div class="category-body">
+      <div class="size-grid" id="grid-calzado"></div>
+      <div class="chart-container">
+        <h4>Piezas por talla</h4>
+        <canvas id="chart-calzado"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- GUANTES -->
+  <section class="category">
+    <div class="category-header">
+      <div class="title"><span class="icon-badge"><svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><rect x="9" y="17" width="20" height="15" rx="5" fill="#1F234F"/><rect x="11" y="5" width="4" height="14" rx="2" fill="#1F234F"/><rect x="16" y="3" width="4" height="16" rx="2" fill="#1F234F"/><rect x="21" y="3" width="4" height="16" rx="2" fill="#1F234F"/><rect x="26" y="5" width="4" height="14" rx="2" fill="#1F234F"/><rect x="3" y="19" width="9" height="6" rx="3" fill="#1F234F" transform="rotate(-35 7.5 22)"/></svg></span> Guantes de seguridad</div>
+      <div class="total-pill" id="guantes-total-pill">0 piezas</div>
+    </div>
+    <div class="category-body">
+      <div class="size-grid" id="grid-guantes"></div>
+      <div class="chart-container">
+        <h4>Piezas por medida</h4>
+        <canvas id="chart-guantes"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <div class="legend-row">
+    <span><span class="dot ok"></span>Stock normal</span>
+    <span><span class="dot warn"></span>⚠️ Stock bajo (menos de 5 piezas)</span>
+    <span><span class="dot danger"></span>🔴 Agotado (0 piezas)</span>
+  </div>
+
+</div>
+
+<script>
+// ---- Fuente de datos en vivo (hoja publicada como CSV) ----
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQx0Ds-91XR4rl-po2M0KsL0PVXQ87U3NW8T6rLCYLh7ZmDerevAAVnMQL3L-GZuyboVrcivsIL8auL/pub?gid=1033255749&single=true&output=csv";
+const AUTO_REFRESH_MS = 60000; // 60s
+
+// Correcciones conocidas de error humano de captura: se identifican por
+// marca temporal + tipo + talla/medida capturados incorrectamente, y se
+// reclasifican antes de calcular el inventario. No modifican la hoja original.
+const CORRECTIONS = [
+  {
+    match: r => r.marca === "13/9/2026 14:00:22" && r.tipo === "Guantes de seguridad" && r.talla === "23",
+    apply: r => { r.tipo = "Calzado"; }
+  }
+];
+
+const SHOE_ORDER = ["22","23","24","25","26","27","28","29","30","32","33"];
+const GLOVE_ORDER = ["5 (XSS)","6 (XS)","7 (S)","8 (M)","9 (L)","10 (XL)"];
+const LOW_STOCK_THRESHOLD = 5;
+let ANOMALIES = new Set();
+let charts = {};
+
+// ---- Sites ----
+const SITES = ["MXCD02","MXCD09","MXCD10","MXCD12","MXCD13"];
+const DEFAULT_SITE = "MXCD10"; // registros históricos sin "SITE MX" capturado se asignan aquí
+let currentSite = localStorage.getItem('epp_current_site') || DEFAULT_SITE;
+let ALL_ITEMS = [];
+
+function renderSiteSelector(){
+  const select = document.getElementById('site-select');
+  select.innerHTML = '';
+  SITES.forEach(site=>{
+    const opt = document.createElement('option');
+    opt.value = site;
+    opt.textContent = site;
+    if (site === currentSite) opt.selected = true;
+    select.appendChild(opt);
+  });
+  select.addEventListener('change', ()=>{
+    currentSite = select.value;
+    localStorage.setItem('epp_current_site', currentSite);
+    updateSiteLabels();
+    renderAll(filterBySite(ALL_ITEMS, currentSite));
+  });
+}
+
+function updateSiteLabels(){
+  document.getElementById('topbar-site').textContent = currentSite;
+  document.title = `Inventario de EPP — ${currentSite}`;
+}
+
+function filterBySite(items, site){
+  return items.filter(i=>i.site === site);
+}
+
+// Parser CSV simple con soporte de campos entre comillas
+function parseCSV(text){
+  const rows = [];
+  let row = [], field = '', inQuotes = false;
+  for (let i=0;i<text.length;i++){
+    const c = text[i];
+    if (inQuotes){
+      if (c === '"'){
+        if (text[i+1] === '"'){ field += '"'; i++; } else { inQuotes = false; }
+      } else field += c;
+    } else {
+      if (c === '"') inQuotes = true;
+      else if (c === ','){ row.push(field); field=''; }
+      else if (c === '\n' || c === '\r'){
+        if (field !== '' || row.length){ row.push(field); rows.push(row); row=[]; field=''; }
+        if (c === '\r' && text[i+1] === '\n') i++;
+      } else field += c;
+    }
+  }
+  if (field !== '' || row.length){ row.push(field); rows.push(row); }
+  return rows;
+}
+
+function buildItemsFromCSV(text){
+  const rows = parseCSV(text).filter(r=>r.length>1);
+  const header = rows[0];
+  const idx = {
+    marca: header.indexOf('Marca temporal'),
+    movimiento: header.indexOf('Tipo de movimiento'),
+    tipo: header.indexOf('Tipo de EPP'),
+    talla: header.indexOf('Talla'),
+    medida: header.indexOf('Medida'),
+    piezas: header.findIndex(h=>h.startsWith('Número de piezas')),
+    site: header.indexOf('SITE MX')
+  };
+  const parsed = rows.slice(1).map(cols=>{
+    const movimiento = (cols[idx.movimiento]||'').trim();
+    const esSalida = /^salida/i.test(movimiento);
+    const magnitud = Math.abs(Number(cols[idx.piezas]) || 0);
+    const siteRaw = (cols[idx.site]||'').trim();
+    return {
+      marca: (cols[idx.marca]||'').trim(),
+      movimiento,
+      tipo: (cols[idx.tipo]||'').trim(),
+      talla: (cols[idx.talla]||'').trim(),
+      medida: (cols[idx.medida]||'').trim(),
+      piezas: esSalida ? -magnitud : magnitud,
+      site: siteRaw || DEFAULT_SITE // registros sin site capturado se asignan al site por defecto
+    };
+  }).filter(r=>r.tipo);
+
+  const newAnomalies = new Set();
+  parsed.forEach(r=>{
+    const before = r.tipo + '|' + r.talla + '|' + r.medida;
+    CORRECTIONS.forEach(c=>{ if (c.match(r)) c.apply(r); });
+    const after = r.tipo + '|' + r.talla + '|' + r.medida;
+    // si tras normalizar sigue sin encajar en el patrón esperado de esa columna, se marca
+    const talla = r.talla !== 'N/A' ? r.talla : r.medida;
+    const expected = r.tipo === 'Calzado' ? SHOE_ORDER : GLOVE_ORDER;
+    if (!expected.includes(talla)) newAnomalies.add(after);
+  });
+  ANOMALIES = newAnomalies;
+
+  const map = new Map();
+  parsed.forEach(r=>{
+    const key = `${r.tipo}|${r.talla}|${r.medida}`;
+    const fullKey = `${r.site}|${key}`;
+    if (map.has(fullKey)){
+      map.get(fullKey).piezas += r.piezas;
+    } else {
+      map.set(fullKey, {tipo:r.tipo, talla:r.talla, medida:r.medida, piezas:r.piezas, site:r.site, key});
+    }
+  });
+  return Array.from(map.values());
+}
+
+function estadoFor(piezas){
+  if (piezas <= 0) return 'danger';
+  if (piezas < LOW_STOCK_THRESHOLD) return 'warn';
+  return 'ok';
+}
+
+function labelFor(item){ return item.talla !== 'N/A' ? item.talla : item.medida; }
+
+function renderGrid(containerId, items, order){
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  const sorted = [...items].sort((a,b)=> order.indexOf(labelFor(a)) - order.indexOf(labelFor(b)));
+  // anomalías van al final
+  const normal = sorted.filter(i=>order.includes(labelFor(i)));
+  const anómalos = items.filter(i=>!order.includes(labelFor(i)));
+  [...normal, ...anómalos].forEach(item=>{
+    const estado = estadoFor(item.piezas);
+    const div = document.createElement('div');
+    div.className = `size-tile ${estado !== 'ok' ? estado : ''}`;
+    const isAnomaly = ANOMALIES.has(item.key);
+    div.innerHTML = `
+      ${isAnomaly ? `<span class="anom" title="Formato inusual: revisar captura original">✳️</span>` : ''}
+      ${estado==='danger' ? '<span class="flag">🔴</span>' : (estado==='warn' ? '<span class="flag">⚠️</span>' : '')}
+      <div class="talla">Talla ${labelFor(item)}</div>
+      <div class="piezas">${item.piezas}</div>
+      <div class="estado">${estado==='danger' ? 'Agotado' : (estado==='warn' ? 'Stock bajo' : '')}</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function renderChart(canvasId, items, order, color){
+  const sorted = [...items].sort((a,b)=> order.indexOf(labelFor(a)) - order.indexOf(labelFor(b)));
+  const anómalos = items.filter(i=>!order.includes(labelFor(i)));
+  const all = [...sorted.filter(i=>order.includes(labelFor(i))), ...anómalos];
+  if (charts[canvasId]) charts[canvasId].destroy();
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  charts[canvasId] = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels: all.map(i=> labelFor(i) + (ANOMALIES.has(i.key) ? ' ✳️' : '')),
+      datasets:[{
+        label:'Piezas',
+        data: all.map(i=>i.piezas),
+        backgroundColor: all.map(i=>{
+          const e = estadoFor(i.piezas);
+          return e==='danger' ? '#E1332B' : (e==='warn' ? '#F5A623' : color);
+        }),
+        borderRadius:6
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{legend:{display:false}},
+      scales:{y:{beginAtZero:true, ticks:{precision:0}}}
+    }
+  });
+}
+
+function renderAll(items){
+  const calzado = items.filter(i=>i.tipo==='Calzado');
+  const guantes = items.filter(i=>i.tipo==='Guantes de seguridad');
+
+  const totalCalzado = calzado.reduce((s,i)=>s+i.piezas,0);
+  const totalGuantes = guantes.reduce((s,i)=>s+i.piezas,0);
+  const totalGeneral = totalCalzado + totalGuantes;
+
+  document.getElementById('hero-total').textContent = totalGeneral.toLocaleString();
+  document.getElementById('kpi-calzado').textContent = totalCalzado.toLocaleString();
+  document.getElementById('kpi-calzado-sub').textContent = `${calzado.length} tallas registradas`;
+  document.getElementById('kpi-guantes').textContent = totalGuantes.toLocaleString();
+  document.getElementById('kpi-guantes-sub').textContent = `${guantes.length} medidas registradas`;
+  document.getElementById('calzado-total-pill').textContent = `${totalCalzado.toLocaleString()} piezas`;
+  document.getElementById('guantes-total-pill').textContent = `${totalGuantes.toLocaleString()} piezas`;
+
+  const agotadas = items.filter(i=>i.piezas<=0).length;
+  const bajas = items.filter(i=>i.piezas>0 && i.piezas<LOW_STOCK_THRESHOLD).length;
+  document.getElementById('kpi-agotadas').textContent = agotadas;
+  document.getElementById('kpi-bajas').textContent = bajas;
+
+  renderGrid('grid-calzado', calzado, SHOE_ORDER);
+  renderGrid('grid-guantes', guantes, GLOVE_ORDER);
+  renderChart('chart-calzado', calzado, SHOE_ORDER, '#2D3276');
+  renderChart('chart-guantes', guantes, GLOVE_ORDER, '#2D3276');
+}
+
+function setLiveBanner(state, text){
+  const banner = document.getElementById('live-banner');
+  const label = document.getElementById('live-banner-text');
+  banner.classList.toggle('error', state === 'error');
+  label.textContent = text;
+}
+
+async function fetchCSVText(){
+  const bust = '&_=' + Date.now();
+  // 1) Intento directo
+  try{
+    const res = await fetch(CSV_URL + bust, {cache:'no-store'});
+    if (res.ok) return await res.text();
+  }catch(e){ /* seguimos al proxy */ }
+
+  // 2) Proxy CORS #1
+  try{
+    const proxied = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(CSV_URL + bust);
+    const res2 = await fetch(proxied, {cache:'no-store'});
+    if (res2.ok) return await res2.text();
+  }catch(e){ /* seguimos al siguiente proxy */ }
+
+  // 3) Proxy CORS #2 (respaldo si el primero está caído)
+  const proxied2 = 'https://corsproxy.io/?url=' + encodeURIComponent(CSV_URL + bust);
+  const res3 = await fetch(proxied2, {cache:'no-store'});
+  if (!res3.ok) throw new Error('HTTP ' + res3.status);
+  return await res3.text();
+}
+
+async function loadData(isManual){
+  const btn = document.getElementById('refresh-btn');
+  btn.classList.add('spinning');
+  setLiveBanner('loading', 'Actualizando…');
+  try{
+    const text = await fetchCSVText();
+    ALL_ITEMS = buildItemsFromCSV(text);
+    renderAll(filterBySite(ALL_ITEMS, currentSite));
+    const now = new Date();
+    const hora = now.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
+    setLiveBanner('ok', `En vivo · última actualización ${hora}`);
+  }catch(err){
+    console.error('No se pudo actualizar desde la hoja', err);
+    setLiveBanner('error', 'No se pudo conectar a la hoja — mostrando el último dato cargado');
+  }finally{
+    btn.classList.remove('spinning');
+  }
+}
+
+renderSiteSelector();
+updateSiteLabels();
+document.getElementById('refresh-btn').addEventListener('click', ()=>loadData(true));
+loadData(false);
+setInterval(()=>loadData(false), AUTO_REFRESH_MS);
+</script>
+</body>
+</html>
