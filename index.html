@@ -53,6 +53,99 @@
   .site-select:hover{background-color:#EDEDF8;}
   .site-select:focus{outline:2px solid var(--yellow);outline-offset:1px;}
 
+  /* area tabs */
+  .filters-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:14px;}
+  .area-tabs{display:flex;gap:4px;background:#E7E7F3;padding:4px;border-radius:14px;width:fit-content;}
+  .area-tab{
+    border:none;background:transparent;color:var(--navy);font-family:inherit;
+    font-size:14px;font-weight:700;letter-spacing:.2px;padding:9px 20px;border-radius:11px;
+    cursor:pointer;transition:background .2s,color .2s;display:flex;align-items:center;gap:8px;
+  }
+  .area-tab .n{background:rgba(45,50,118,.1);font-size:11px;font-weight:800;padding:1px 8px;border-radius:999px;}
+  .area-tab.active{background:var(--navy);color:#fff;}
+  .area-tab.active .n{background:rgba(255,255,255,.2);}
+
+  /* inventory table */
+  .inventory-panel{
+    background:var(--bg-card);border-radius:var(--radius);
+    box-shadow:0 2px 10px rgba(31,35,79,.06);margin-bottom:24px;overflow:hidden;
+  }
+  .inv-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .inv-controls select, .inv-controls input{
+    border:1.5px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;
+    font-family:inherit;font-size:13px;padding:8px 14px;border-radius:10px;outline:none;
+  }
+  .inv-controls select{cursor:pointer;}
+  .inv-controls select option{color:var(--text-primary);}
+  .inv-controls input{width:210px;}
+  .inv-controls input::placeholder{color:rgba(255,255,255,.6);}
+  .inventory-table-wrap{overflow-x:auto;max-height:520px;overflow-y:auto;}
+  table.inventory-table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  table.inventory-table thead th{
+    position:sticky;top:0;background:#fff;z-index:1;
+    text-align:left;font-size:11px;color:var(--text-secondary);text-transform:uppercase;
+    letter-spacing:.4px;font-weight:700;padding:14px 24px;border-bottom:2px solid #EFEFF7;
+  }
+  table.inventory-table th.sortable{cursor:pointer;user-select:none;}
+  table.inventory-table th.sortable:hover{color:var(--navy);}
+  table.inventory-table th .sort-arrow{opacity:.4;font-size:10px;margin-left:2px;}
+  table.inventory-table th.sort-active .sort-arrow{opacity:1;color:var(--navy);}
+  table.inventory-table td{padding:12px 24px;border-bottom:1px solid #F2F2F9;vertical-align:middle;}
+  table.inventory-table tbody tr:nth-child(even) td{background:#FBFBFE;}
+  table.inventory-table tr:last-child td{border-bottom:none;}
+  table.inventory-table tr:hover td{background:#F3F3FA;}
+  .inv-sku{
+    font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+    font-size:11.5px;font-weight:700;color:var(--navy);background:#EDEDF8;
+    padding:4px 9px;border-radius:6px;letter-spacing:.3px;
+  }
+  .inv-cat{display:flex;align-items:center;gap:8px;font-weight:600;}
+  .inv-cat .sw{width:8px;height:8px;border-radius:50%;background:var(--navy);flex-shrink:0;}
+  .inv-cat.guantes .sw{background:#1FA37A;}
+  .inv-badge{
+    font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;
+    background:#EDEDF8;color:var(--navy);text-transform:uppercase;letter-spacing:.3px;
+  }
+  .inv-badge.warn{background:#FFF1D6;color:var(--warn);}
+  .inv-badge.danger{background:#FBE0DE;color:var(--danger);}
+  .inv-level{display:flex;align-items:center;gap:10px;min-width:140px;}
+  .inv-level .track{flex:1;height:7px;border-radius:999px;background:#EFEFF7;overflow:hidden;}
+  .inv-level .fill{height:100%;border-radius:999px;background:var(--navy);}
+  .inv-level.warn .fill{background:var(--warn);}
+  .inv-level.danger .fill{background:var(--danger);}
+  .inv-piezas{font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;}
+  .inv-piezas.warn{color:var(--warn);}
+  .inv-piezas.danger{color:var(--danger);}
+  .inventory-empty{padding:40px 24px;text-align:center;color:var(--text-secondary);font-size:13.5px;}
+  .inv-footer{
+    padding:12px 24px;border-top:1px solid #F2F2F9;font-size:12px;color:var(--text-secondary);
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  }
+
+  /* activity feed */
+  .activity-panel{
+    background:var(--bg-card);border-radius:var(--radius);
+    box-shadow:0 2px 10px rgba(31,35,79,.06);margin-bottom:24px;overflow:hidden;
+  }
+  .activity-list{padding:6px 24px 10px;}
+  .activity-row{
+    display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid #F2F2F9;
+  }
+  .activity-row:last-child{border-bottom:none;}
+  .activity-icon{
+    width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+    font-size:15px;flex-shrink:0;background:#EDEDF8;
+  }
+  .activity-icon.in{background:#E4F6EF;}
+  .activity-icon.out{background:#FBE0DE;}
+  .activity-main{flex:1;min-width:0;}
+  .activity-main .line1{font-size:13.5px;font-weight:600;color:var(--text-primary);}
+  .activity-main .line2{font-size:12px;color:var(--text-secondary);margin-top:2px;}
+  .activity-qty{font-size:15px;font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums;}
+  .activity-qty.in{color:#1FA37A;}
+  .activity-qty.out{color:var(--danger);}
+  .activity-empty{padding:26px 24px;text-align:center;color:var(--text-secondary);font-size:13.5px;}
+
   /* hero */
   .hero{
     background:var(--navy);
@@ -177,9 +270,12 @@
     </div>
   </div>
 
-  <div class="site-selector">
-    <label for="site-select">Site</label>
-    <select class="site-select" id="site-select"></select>
+  <div class="filters-row">
+    <div class="area-tabs" id="area-tabs"></div>
+    <div class="site-selector">
+      <label for="site-select">Site</label>
+      <select class="site-select" id="site-select"></select>
+    </div>
   </div>
 
   <section class="kpi-row">
@@ -235,6 +331,48 @@
     </div>
   </section>
 
+  <!-- TABLA DE INVENTARIO -->
+  <section class="inventory-panel">
+    <div class="category-header">
+      <div class="title"><span class="icon-badge">📋</span> <span id="inv-panel-title">Detalle de inventario — Cuarto de EPP</span></div>
+      <div class="inv-controls">
+        <select id="inv-filter-estado">
+          <option value="todos">Todos los estados</option>
+          <option value="ok">Normal</option>
+          <option value="warn">Stock bajo</option>
+          <option value="danger">Agotado</option>
+        </select>
+        <input type="text" id="inv-search" placeholder="Buscar SKU, talla o medida…">
+      </div>
+    </div>
+    <div class="inventory-table-wrap">
+      <table class="inventory-table">
+        <thead>
+          <tr>
+            <th>SKU</th>
+            <th>Categoría</th>
+            <th>Talla / Medida</th>
+            <th class="sortable" id="th-piezas">Piezas <span class="sort-arrow">↕</span></th>
+            <th>Nivel</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody id="inv-table-body"></tbody>
+      </table>
+      <div class="inventory-empty" id="inv-empty" style="display:none;">Sin resultados para esa búsqueda.</div>
+    </div>
+    <div class="inv-footer" id="inv-footer"></div>
+  </section>
+
+  <!-- ACTIVIDAD RECIENTE -->
+  <section class="activity-panel">
+    <div class="category-header">
+      <div class="title"><span class="icon-badge">🕒</span> Actividad reciente</div>
+      <div class="total-pill" id="activity-scope-pill">—</div>
+    </div>
+    <div class="activity-list" id="activity-list"></div>
+  </section>
+
   <div class="legend-row">
     <span><span class="dot ok"></span>Stock normal</span>
     <span><span class="dot warn"></span>⚠️ Stock bajo (menos de 5 piezas)</span>
@@ -253,8 +391,16 @@ const AUTO_REFRESH_MS = 60000; // 60s
 // reclasifican antes de calcular el inventario. No modifican la hoja original.
 const CORRECTIONS = [
   {
-    match: r => r.marca === "13/9/2026 14:00:22" && r.tipo === "Guantes de seguridad" && r.talla === "23",
+    // El analista capturó "Guantes de seguridad" pero llenó "Talla" con un número de calzado
+    // (ej. "23") en vez de llenar "Medida". Se reclasifica como Calzado.
+    match: r => r.tipo === "Guantes de seguridad" && r.medida === "N/A" && /^\d+$/.test(r.talla),
     apply: r => { r.tipo = "Calzado"; }
+  },
+  {
+    // El analista capturó "Calzado" pero llenó "Medida" con formato de guante (ej. "7 (S)", "11 (XXL)")
+    // en vez de llenar "Talla". Se reclasifica como Guantes de seguridad.
+    match: r => r.tipo === "Calzado" && r.talla === "N/A" && /\(.+\)\s*$/.test(r.medida),
+    apply: r => { r.tipo = "Guantes de seguridad"; }
   }
 ];
 
@@ -263,12 +409,21 @@ const GLOVE_ORDER = ["5 (XSS)","6 (XS)","7 (S)","8 (M)","9 (L)","10 (XL)"];
 const LOW_STOCK_THRESHOLD = 5;
 let ANOMALIES = new Set();
 let charts = {};
+let CURRENT_TABLE_ITEMS = [];
+let TABLE_SORT = {field:'default', dir:1};
 
 // ---- Sites ----
 const SITES = ["MXCD02","MXCD09","MXCD10","MXCD12","MXCD13"];
 const DEFAULT_SITE = "MXCD10"; // registros históricos sin "SITE MX" capturado se asignan aquí
 let currentSite = localStorage.getItem('epp_current_site') || DEFAULT_SITE;
+
+// ---- Áreas (Cuarto de EPP vs Almacén) ----
+const AREAS = ["Cuarto de EPP","Almacén"];
+const DEFAULT_AREA = "Cuarto de EPP"; // registros históricos sin "Ubicación del EPP" capturado se asignan aquí
+let currentArea = localStorage.getItem('epp_current_area') || DEFAULT_AREA;
+
 let ALL_ITEMS = [];
+let ALL_MOVEMENTS = [];
 
 function renderSiteSelector(){
   const select = document.getElementById('site-select');
@@ -284,7 +439,29 @@ function renderSiteSelector(){
     currentSite = select.value;
     localStorage.setItem('epp_current_site', currentSite);
     updateSiteLabels();
-    renderAll(filterBySite(ALL_ITEMS, currentSite));
+    renderAreaTabs();
+    renderAll(filterCurrent(ALL_ITEMS));
+  });
+}
+
+function renderAreaTabs(){
+  const container = document.getElementById('area-tabs');
+  container.innerHTML = '';
+  AREAS.forEach(area=>{
+    const itemsHere = ALL_ITEMS.filter(i=>i.area===area && i.site===currentSite);
+    const totalCalzado = itemsHere.filter(i=>i.tipo==='Calzado').reduce((s,i)=>s+Math.max(i.piezas,0),0);
+    const totalGuantes = itemsHere.filter(i=>i.tipo==='Guantes de seguridad').reduce((s,i)=>s+Math.max(i.piezas,0),0);
+    const btn = document.createElement('button');
+    btn.className = 'area-tab' + (area === currentArea ? ' active' : '');
+    btn.innerHTML = `${area} <span class="n">👞 ${totalCalzado}</span><span class="n">🧤 ${totalGuantes}</span>`;
+    btn.addEventListener('click', ()=>{
+      currentArea = area;
+      localStorage.setItem('epp_current_area', currentArea);
+      renderAreaTabs();
+      updateAreaLabel();
+      renderAll(filterCurrent(ALL_ITEMS));
+    });
+    container.appendChild(btn);
   });
 }
 
@@ -293,8 +470,16 @@ function updateSiteLabels(){
   document.title = `Inventario de EPP — ${currentSite}`;
 }
 
+function updateAreaLabel(){
+  document.getElementById('inv-panel-title').textContent = `Detalle de inventario — ${currentArea}`;
+}
+
 function filterBySite(items, site){
   return items.filter(i=>i.site === site);
+}
+
+function filterCurrent(items){
+  return items.filter(i=>i.site === currentSite && i.area === currentArea);
 }
 
 // Parser CSV simple con soporte de campos entre comillas
@@ -330,28 +515,56 @@ function buildItemsFromCSV(text){
     talla: header.indexOf('Talla'),
     medida: header.indexOf('Medida'),
     piezas: header.findIndex(h=>h.startsWith('Número de piezas')),
-    site: header.indexOf('SITE MX')
+    site: header.indexOf('SITE MX'),
+    area: header.indexOf('Ubicación del EPP'),
+    analista: header.indexOf('Nombre del analista')
   };
-  const parsed = rows.slice(1).map(cols=>{
+  // Movimientos de transferencia entre áreas (no son una entrada/salida real del inventario total,
+  // solo cambian el EPP de lugar). Dirección fija según el nombre exacto del movimiento:
+  const TRANSFER_TO_ALMACEN_RE = /^salida de epp por entrega a almac/i;      // Cuarto de EPP -> Almacén
+  const TRANSFER_TO_CUARTO_RE = /^entrada de epp por regreso de almac/i;     // Almacén -> Cuarto de EPP
+
+  const baseRows = rows.slice(1).map(cols=>{
     const movimiento = (cols[idx.movimiento]||'').trim();
-    const esSalida = /^salida/i.test(movimiento);
-    const magnitud = Math.abs(Number(cols[idx.piezas]) || 0);
+    // Se trunca a entero (no se redondea): 1.5 -> 1, -1.5 -> 1 de magnitud.
+    const magnitud = Math.abs(Math.trunc(Number(cols[idx.piezas]) || 0));
     const siteRaw = (cols[idx.site]||'').trim();
+    const areaRaw = (cols[idx.area]||'').trim();
     return {
       marca: (cols[idx.marca]||'').trim(),
+      analista: (cols[idx.analista]||'').trim(),
       movimiento,
       tipo: (cols[idx.tipo]||'').trim(),
       talla: (cols[idx.talla]||'').trim(),
       medida: (cols[idx.medida]||'').trim(),
-      piezas: esSalida ? -magnitud : magnitud,
-      site: siteRaw || DEFAULT_SITE // registros sin site capturado se asignan al site por defecto
+      magnitud,
+      site: siteRaw || DEFAULT_SITE, // registros sin site capturado se asignan al site por defecto
+      area: areaRaw || DEFAULT_AREA // registros sin área capturada se asignan al Cuarto de EPP
     };
   }).filter(r=>r.tipo);
 
+  // Corrección de tipo mal capturado se aplica antes de expandir transferencias (no depende de área/piezas).
+  baseRows.forEach(r=>{ CORRECTIONS.forEach(c=>{ if (c.match(r)) c.apply(r); }); });
+
+  // Una fila normal genera 1 movimiento firmado; una transferencia genera 2 (sale de un área, entra a la otra)
+  // para que el total nunca desaparezca, solo se mueva.
+  const parsed = [];
+  baseRows.forEach(r=>{
+    const { magnitud, ...base } = r;
+    if (TRANSFER_TO_ALMACEN_RE.test(r.movimiento)){
+      parsed.push({ ...base, area: 'Cuarto de EPP', piezas: -magnitud });
+      parsed.push({ ...base, area: 'Almacén', piezas: magnitud });
+    } else if (TRANSFER_TO_CUARTO_RE.test(r.movimiento)){
+      parsed.push({ ...base, area: 'Almacén', piezas: -magnitud });
+      parsed.push({ ...base, area: 'Cuarto de EPP', piezas: magnitud });
+    } else {
+      const esSalida = /^salida/i.test(r.movimiento);
+      parsed.push({ ...base, piezas: esSalida ? -magnitud : magnitud });
+    }
+  });
+
   const newAnomalies = new Set();
   parsed.forEach(r=>{
-    const before = r.tipo + '|' + r.talla + '|' + r.medida;
-    CORRECTIONS.forEach(c=>{ if (c.match(r)) c.apply(r); });
     const after = r.tipo + '|' + r.talla + '|' + r.medida;
     // si tras normalizar sigue sin encajar en el patrón esperado de esa columna, se marca
     const talla = r.talla !== 'N/A' ? r.talla : r.medida;
@@ -363,14 +576,16 @@ function buildItemsFromCSV(text){
   const map = new Map();
   parsed.forEach(r=>{
     const key = `${r.tipo}|${r.talla}|${r.medida}`;
-    const fullKey = `${r.site}|${key}`;
+    const fullKey = `${r.site}|${r.area}|${key}`;
     if (map.has(fullKey)){
       map.get(fullKey).piezas += r.piezas;
     } else {
-      map.set(fullKey, {tipo:r.tipo, talla:r.talla, medida:r.medida, piezas:r.piezas, site:r.site, key});
+      map.set(fullKey, {tipo:r.tipo, talla:r.talla, medida:r.medida, piezas:r.piezas, site:r.site, area:r.area, key});
     }
   });
-  return Array.from(map.values());
+  // El inventario nunca puede mostrarse en negativo: se limita a 0 como piso (sin techo).
+  ALL_MOVEMENTS = parsed;
+  return Array.from(map.values()).map(i=>({...i, piezas: Math.max(0, i.piezas)}));
 }
 
 function estadoFor(piezas){
@@ -380,6 +595,21 @@ function estadoFor(piezas){
 }
 
 function labelFor(item){ return item.talla !== 'N/A' ? item.talla : item.medida; }
+
+function skuFor(item){
+  const prefix = item.tipo === 'Calzado' ? 'CZ' : 'GT';
+  const clean = labelFor(item).replace(/[\s()]/g, '').toUpperCase();
+  return `${prefix}-${clean}`;
+}
+
+// Convierte "13/9/2026 10:53:07" -> Date. Devuelve null si no logra parsear.
+function parseMarca(str){
+  if (!str) return null;
+  const m = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+  if (!m) return null;
+  const [, d, mo, y, h, mi, s] = m;
+  return new Date(+y, +mo-1, +d, +h, +mi, +(s||0));
+}
 
 function renderGrid(containerId, items, order){
   const container = document.getElementById(containerId);
@@ -457,6 +687,104 @@ function renderAll(items){
   renderGrid('grid-guantes', guantes, GLOVE_ORDER);
   renderChart('chart-calzado', calzado, SHOE_ORDER, '#2D3276');
   renderChart('chart-guantes', guantes, GLOVE_ORDER, '#2D3276');
+  renderInventoryTable(items);
+  renderActivityFeed();
+}
+
+function renderInventoryTable(items){
+  CURRENT_TABLE_ITEMS = items;
+  const term = (document.getElementById('inv-search').value || '').trim().toLowerCase();
+  const estadoFiltro = document.getElementById('inv-filter-estado').value;
+  const calzado = items.filter(i=>i.tipo==='Calzado');
+  const guantes = items.filter(i=>i.tipo==='Guantes de seguridad');
+  const sortedCalzado = [...calzado].sort((a,b)=> SHOE_ORDER.indexOf(labelFor(a)) - SHOE_ORDER.indexOf(labelFor(b)));
+  const sortedGuantes = [...guantes].sort((a,b)=> GLOVE_ORDER.indexOf(labelFor(a)) - GLOVE_ORDER.indexOf(labelFor(b)));
+  let all = [...sortedCalzado, ...sortedGuantes];
+
+  const maxCalzado = Math.max(1, ...calzado.map(i=>Math.max(i.piezas,0)));
+  const maxGuantes = Math.max(1, ...guantes.map(i=>Math.max(i.piezas,0)));
+
+  if (TABLE_SORT.field === 'piezas'){
+    all = [...all].sort((a,b)=> TABLE_SORT.dir * (a.piezas - b.piezas));
+  }
+
+  let filtered = term
+    ? all.filter(i=> i.tipo.toLowerCase().includes(term) || labelFor(i).toLowerCase().includes(term) || skuFor(i).toLowerCase().includes(term))
+    : all;
+  if (estadoFiltro !== 'todos'){
+    filtered = filtered.filter(i=> estadoFor(i.piezas) === estadoFiltro);
+  }
+
+  const tbody = document.getElementById('inv-table-body');
+  const empty = document.getElementById('inv-empty');
+  const footer = document.getElementById('inv-footer');
+  tbody.innerHTML = '';
+
+  const totalPiezas = all.reduce((s,i)=>s+i.piezas,0);
+  footer.innerHTML = `<span>${filtered.length} de ${all.length} SKUs mostrados</span><span>${totalPiezas.toLocaleString()} piezas totales en esta vista</span>`;
+
+  if (!filtered.length){
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  filtered.forEach(item=>{
+    const estado = estadoFor(item.piezas);
+    const max = item.tipo === 'Calzado' ? maxCalzado : maxGuantes;
+    const pct = Math.max(item.piezas>0 ? 6 : 0, Math.round((Math.max(item.piezas,0) / max) * 100));
+    const estadoLabel = estado==='danger' ? 'Agotado' : (estado==='warn' ? 'Stock bajo' : 'Normal');
+    const isAnomaly = ANOMALIES.has(item.key);
+    const catClass = item.tipo === 'Calzado' ? '' : 'guantes';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="inv-sku">${skuFor(item)}</span></td>
+      <td><div class="inv-cat ${catClass}"><span class="sw"></span>${item.tipo}</div></td>
+      <td>${labelFor(item)} ${isAnomaly ? '<span title="Formato inusual: revisar captura original">✳️</span>' : ''}</td>
+      <td><span class="inv-piezas ${estado!=='ok'?estado:''}">${item.piezas.toLocaleString()}</span></td>
+      <td>
+        <div class="inv-level ${estado!=='ok'?estado:''}">
+          <div class="track"><div class="fill" style="width:${pct}%;"></div></div>
+        </div>
+      </td>
+      <td><span class="inv-badge ${estado!=='ok'?estado:''}">${estadoLabel}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderActivityFeed(){
+  const scope = ALL_MOVEMENTS.filter(m => m.site === currentSite && m.area === currentArea);
+  const sorted = [...scope].sort((a,b)=>{
+    const da = parseMarca(a.marca), db = parseMarca(b.marca);
+    if (!da || !db) return 0;
+    return db - da;
+  }).slice(0, 8);
+
+  document.getElementById('activity-scope-pill').textContent = `${currentSite} · ${currentArea}`;
+  const list = document.getElementById('activity-list');
+  list.innerHTML = '';
+
+  if (!sorted.length){
+    list.innerHTML = '<div class="activity-empty">Sin movimientos registrados en este site/área todavía.</div>';
+    return;
+  }
+
+  sorted.forEach(m=>{
+    const isSalida = m.piezas < 0;
+    const label = m.talla !== 'N/A' ? m.talla : m.medida;
+    const row = document.createElement('div');
+    row.className = 'activity-row';
+    row.innerHTML = `
+      <div class="activity-icon ${isSalida ? 'out':'in'}">${isSalida ? '↓' : '↑'}</div>
+      <div class="activity-main">
+        <div class="line1">${m.tipo} · ${label}</div>
+        <div class="line2">${m.marca}${m.analista ? ' · ' + m.analista : ''}</div>
+      </div>
+      <div class="activity-qty ${isSalida ? 'out':'in'}">${isSalida ? '' : '+'}${m.piezas}</div>
+    `;
+    list.appendChild(row);
+  });
 }
 
 function setLiveBanner(state, text){
@@ -495,7 +823,8 @@ async function loadData(isManual){
   try{
     const text = await fetchCSVText();
     ALL_ITEMS = buildItemsFromCSV(text);
-    renderAll(filterBySite(ALL_ITEMS, currentSite));
+    renderAreaTabs();
+    renderAll(filterCurrent(ALL_ITEMS));
     const now = new Date();
     const hora = now.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
     setLiveBanner('ok', `En vivo · última actualización ${hora}`);
@@ -508,7 +837,18 @@ async function loadData(isManual){
 }
 
 renderSiteSelector();
+renderAreaTabs();
 updateSiteLabels();
+updateAreaLabel();
+document.getElementById('inv-search').addEventListener('input', ()=>renderInventoryTable(CURRENT_TABLE_ITEMS));
+document.getElementById('inv-filter-estado').addEventListener('change', ()=>renderInventoryTable(CURRENT_TABLE_ITEMS));
+document.getElementById('th-piezas').addEventListener('click', ()=>{
+  if (TABLE_SORT.field !== 'piezas'){ TABLE_SORT = {field:'piezas', dir:-1}; }
+  else { TABLE_SORT.dir *= -1; }
+  document.getElementById('th-piezas').classList.add('sort-active');
+  document.querySelector('#th-piezas .sort-arrow').textContent = TABLE_SORT.dir === 1 ? '↑' : '↓';
+  renderInventoryTable(CURRENT_TABLE_ITEMS);
+});
 document.getElementById('refresh-btn').addEventListener('click', ()=>loadData(true));
 loadData(false);
 setInterval(()=>loadData(false), AUTO_REFRESH_MS);
