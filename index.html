@@ -138,12 +138,14 @@
   }
   .activity-icon.in{background:#E4F6EF;}
   .activity-icon.out{background:#FBE0DE;}
+  .activity-icon.warn{background:#FFF1D6;}
   .activity-main{flex:1;min-width:0;}
   .activity-main .line1{font-size:13.5px;font-weight:600;color:var(--text-primary);}
   .activity-main .line2{font-size:12px;color:var(--text-secondary);margin-top:2px;}
   .activity-qty{font-size:15px;font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums;}
   .activity-qty.in{color:#1FA37A;}
   .activity-qty.out{color:var(--danger);}
+  .activity-qty.warn{color:var(--warn);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;}
   .activity-empty{padding:26px 24px;text-align:center;color:var(--text-secondary);font-size:13.5px;}
 
   /* hero */
@@ -413,9 +415,10 @@ let CURRENT_TABLE_ITEMS = [];
 let TABLE_SORT = {field:'default', dir:1};
 
 // ---- Sites ----
-const SITES = ["MXCD02","MXCD09","MXCD10","MXCD12","MXCD13"];
+const SITES = ["MXCD02","MXCD09","MXCD10","MXCD13"];
 const DEFAULT_SITE = "MXCD10"; // registros históricos sin "SITE MX" capturado se asignan aquí
 let currentSite = localStorage.getItem('epp_current_site') || DEFAULT_SITE;
+if (!SITES.includes(currentSite)) currentSite = DEFAULT_SITE; // por si quedó guardado un site ya retirado (ej. MXCD12)
 
 // ---- Áreas (Cuarto de EPP vs Almacén) ----
 const AREAS = ["Cuarto de EPP","Almacén"];
@@ -547,10 +550,16 @@ function buildItemsFromCSV(text){
   baseRows.forEach(r=>{ CORRECTIONS.forEach(c=>{ if (c.match(r)) c.apply(r); }); });
 
   // Una fila normal genera 1 movimiento firmado; una transferencia genera 2 (sale de un área, entra a la otra)
-  // para que el total nunca desaparezca, solo se mueva.
+  // para que el total nunca desaparezca, solo se mueva. Una captura inválida (Talla y Medida llenas a la vez)
+  // se rechaza del inventario y se conserva solo para mostrarse como advertencia en Actividad reciente.
   const parsed = [];
   baseRows.forEach(r=>{
     const { magnitud, ...base } = r;
+    const capturaInvalida = r.talla !== 'N/A' && r.medida !== 'N/A';
+    if (capturaInvalida){
+      parsed.push({ ...base, piezas: 0, piezasIntentadas: magnitud, invalido: true });
+      return;
+    }
     if (TRANSFER_TO_ALMACEN_RE.test(r.movimiento)){
       parsed.push({ ...base, area: 'Cuarto de EPP', piezas: -magnitud });
       parsed.push({ ...base, area: 'Almacén', piezas: magnitud });
@@ -565,6 +574,7 @@ function buildItemsFromCSV(text){
 
   const newAnomalies = new Set();
   parsed.forEach(r=>{
+    if (r.invalido) return;
     const after = r.tipo + '|' + r.talla + '|' + r.medida;
     // si tras normalizar sigue sin encajar en el patrón esperado de esa columna, se marca
     const talla = r.talla !== 'N/A' ? r.talla : r.medida;
@@ -575,6 +585,7 @@ function buildItemsFromCSV(text){
 
   const map = new Map();
   parsed.forEach(r=>{
+    if (r.invalido) return; // captura inválida: no se cuenta en el inventario
     const key = `${r.tipo}|${r.talla}|${r.medida}`;
     const fullKey = `${r.site}|${r.area}|${key}`;
     if (map.has(fullKey)){
@@ -771,6 +782,20 @@ function renderActivityFeed(){
   }
 
   sorted.forEach(m=>{
+    if (m.invalido){
+      const row = document.createElement('div');
+      row.className = 'activity-row';
+      row.innerHTML = `
+        <div class="activity-icon warn">⚠️</div>
+        <div class="activity-main">
+          <div class="line1">Captura inválida — ${m.tipo}</div>
+          <div class="line2">Talla "${m.talla}" y Medida "${m.medida}" llenas a la vez, no se contó en el inventario · ${m.marca}${m.analista ? ' · ' + m.analista : ''}</div>
+        </div>
+        <div class="activity-qty warn">Revisar</div>
+      `;
+      list.appendChild(row);
+      return;
+    }
     const isSalida = m.piezas < 0;
     const label = m.talla !== 'N/A' ? m.talla : m.medida;
     const row = document.createElement('div');
